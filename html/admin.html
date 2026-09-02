@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Shinku</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b1329;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: #111a2e;
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            color: #f8fafc;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .grid-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: #111a2e;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nomor-aktif {
+            font-size: 64px;
+            font-weight: 800;
+            color: #f59e0b;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .layanan-aktif {
+            text-align: center;
+            font-size: 18px;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-panggil {
+            background-color: #0284c7;
+            color: white;
+        }
+
+        .btn-panggil:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-ulang {
+            background-color: #d97706;
+            color: white;
+        }
+
+        .btn-ulang:hover {
+            background-color: #b45309;
+        }
+
+        .btn-reset {
+            background-color: #dc2626;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-reset:hover {
+            background-color: #b91c1c;
+        }
+
+        /* TABEL ANTREAN */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        th {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .badge {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>PANEL PETUGAS LOKET - SHINKU</h1>
+                <p>Kontrol Pemanggilan Antrean</p>
+            </div>
+        </header>
+
+        <div class="grid-panel">
+            <!-- KONTROL PANGGILAN -->
+            <div class="card">
+                <div class="card-title">PANGGILAN AKTIF</div>
+                <div class="nomor-aktif" id="nomor-dipanggil">---</div>
+                <div class="layanan-aktif" id="layanan-dipanggil">Belum Ada Panggilan</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-panggil" onclick="panggilBerikutnya()">PANGGIL SELANJUTNYA (NEXT)</button>
+                    <button class="btn btn-ulang" onclick="panggilUlang()">PANGGIL ULANG</button>
+                    <button class="btn btn-reset" onclick="resetAntrean()">RESET SEMUA ANTREAN</button>
+                </div>
+            </div>
+
+            <!-- DAFTAR ANTREAN MENUNGGU -->
+            <div class="card">
+                <div class="card-title">DAFTAR ANTREAN (MENUNGGU)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NO TIKET</th>
+                            <th>LAYANAN</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-antrean">
+                        <!-- Data dimasukkan via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi Suara Pemanggilan
+        function bunyikanSuara(nomor, layanan) {
+            if ('speechSynthesis' in window) {
+                // Hentikan suara sebelumnya jika masih ada yang berjalan
+                window.speechSynthesis.cancel();
+
+                // Format teks ucapan (misal: "Nomor antrean A 0 0 1, silakan menuju Loket 1, Layanan Informasi")
+                let nomorSpasi = nomor.replace('-', ' ').split('').join(' ');
+                let teksPanggilan = `Nomor antrean ${nomorSpasi}, silakan menuju Loket 1, ${layanan}`;
+
+                let ucapan = new SpeechSynthesisUtterance(teksPanggilan);
+                ucapan.lang = 'id-ID'; // Set Bahasa Indonesia
+                ucapan.rate = 0.85;     // Kecepatan bicara (agak pelan biar jelas)
+                ucapan.pitch = 1;       // Nada suara normal
+
+                window.speechSynthesis.speak(ucapan);
+            }
+        }
+
+        // Memuat dan memperbarui tampilan admin
+        function muatDataAdmin() {
+            let daftarAntrean = JSON.parse(localStorage.getItem('antreanShinku')) || [];
+            let panggilanAktif = JSON.parse(localStorage.getItem('panggilanAktifShinku')) || null;
+
+            if (panggilanAktif) {
+                document.getElementById('nomor-dipanggil').innerText = panggilanAktif.nomor;
+                document.getElementById('layanan-dipanggil').innerText = panggilanAktif.layanan;
+            } else {
+                document.getElementById('nomor-dipanggil').innerText = "---";
+                document.getElementById('layanan-dipanggil').innerText = "Belum Ada Panggilan";
+            }
+
+            let tbody = document.getElementById('tabel-antrean');
+            tbody.innerHTML = '';
+
+            if (daftarAntrean.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b;">Antrean Kosong</td></tr>';
+            } else {
+                daftarAntrean.forEach(item => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:bold; color:#f59e0b;">${item.nomor}</td>
+                        <td>${item.layanan}</td>
+                        <td><span class="badge">Menunggu</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        // Fungsi Next (Panggil Antrean Selanjutnya)
+        function panggilBerikutnya() {
+            let daftarAntrean = JSON.parse(localStorage.getItem('antreanShinku')) || [];
+
+            if (daftarAntrean.length === 0) {
+                alert("Tidak ada antrean yang menunggu.");
+                return;
+            }
+
+            let antreanDipanggil = daftarAntrean.shift();
+
+            localStorage.setItem('antreanShinku', JSON.stringify(daftarAntrean));
+            localStorage.setItem('panggilanAktifShinku', JSON.stringify(antreanDipanggil));
+
+            muatDataAdmin();
+            bunyikanSuara(antreanDipanggil.nomor, antreanDipanggil.layanan);
+        }
+
+        // Fungsi Panggil Ulang Nomor Saat Ini + Suara
+        function panggilUlang() {
+            let panggilanAktif = JSON.parse(localStorage.getItem('panggilanAktifShinku'));
+            if (!panggilanAktif) {
+                alert("Belum ada antrean yang dipanggil.");
+                return;
+            }
+            
+            // Pemicu event storage ulang agar layar display ikut merespons
+            localStorage.setItem('panggilanAktifShinku', JSON.stringify(panggilanAktif));
+            
+            // Jalankan suara panggil ulang
+            bunyikanSuara(panggilanAktif.nomor, panggilanAktif.layanan);
+        }
+
+        // Fungsi Reset
+        function resetAntrean() {
+            if (confirm("Apakah Anda yakin ingin menghapus semua data antrean hari ini?")) {
+                localStorage.removeItem('antreanShinku');
+                localStorage.removeItem('panggilanAktifShinku');
+                localStorage.removeItem('counterShinku');
+                muatDataAdmin();
+            }
+        }
+
+        // Pantau Perubahan Data secara Real-Time
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'panggilanAktifShinku' || e.key === 'antreanShinku') {
+                muatDataAdmin();
+            }
+        });
+
+        // Load awal
+        muatDataAdmin();
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Antrean - Shinku</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b1329;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(90deg, #162238 0%, #0b1329 100%);
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid #0284c7;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-text h1 {
+            font-size: 20px;
+            letter-spacing: 1px;
+            color: #f8fafc;
+        }
+
+        .header-text p {
+            font-size: 13px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .jam-digital {
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            background: rgba(22, 34, 56, 0.8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        /* DISPLAY UTAMA */
+        main {
+            padding: 30px 40px;
+            display: flex;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            align-items: stretch;
+        }
+
+        .main-card {
+            flex: 2;
+            background: #111a2e;
+            border: 2px solid #0284c7;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(2, 132, 199, 0.15);
+        }
+
+        .badge-status {
+            background-color: #15803d;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 6px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .label-antrean {
+            font-size: 18px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .nomor-utama {
+            font-size: 110px;
+            font-weight: 800;
+            color: #f59e0b;
+            text-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+            line-height: 1.1;
+            margin: 10px 0;
+        }
+
+        .tujuan-box {
+            background-color: #0b1329;
+            border: 1px solid #1e293b;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-top: 10px;
+            width: 80%;
+        }
+
+        .tujuan-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .loket-text {
+            font-size: 18px;
+            color: #38bdf8;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* SIDEBAR SISA ANTREAN */
+        .sidebar-info {
+            flex: 1;
+            background: #111a2e;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid #1e293b;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .sidebar-info h3 {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .angka-menunggu {
+            font-size: 72px;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        /* FOOTER RUNNING TEXT */
+        footer {
+            background-color: #0284c7;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .running-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DISPLAY -->
+    <header>
+        <div class="logo-title">
+            <div class="header-text">
+                <h1>PELAYANAN LOKET SHINKU</h1>
+                <p>Sistem Antrean Layanan Publik</p>
+            </div>
+        </div>
+        <div class="jam-digital" id="jam-digital">00:00:00 WITA</div>
+    </header>
+
+    <!-- DISPLAY MONITOR TV -->
+    <main>
+        <div class="main-card">
+            <div class="badge-status" id="status-badge">MENUNGGU PANGGILAN</div>
+            <div class="label-antrean">NOMOR ANTREAN</div>
+            <div class="nomor-utama" id="display-nomor">---</div>
+            <div class="tujuan-box">
+                <div class="tujuan-text" id="display-layanan">Silakan Panggil Antrean</div>
+                <div class="loket-text">LOKET 1</div>
+            </div>
+        </div>
+
+        <div class="sidebar-info">
+            <h3>TOTAL ANTREAN MENUNGGU</h3>
+            <div class="angka-menunggu" id="total-menunggu">0</div>
+            <p style="color: #94a3b8; margin-top: 10px; font-size: 13px;">Orang dalam antrean</p>
+        </div>
+    </main>
+
+    <!-- RUNNING TEXT -->
+    <footer>
+        <div class="running-text">
+            Selamat Datang di Pelayanan Loket Shinku — Utamakan Keselamatan dan Keramahan dalam Pelayanan — Jam Operasional: Senin - Jumat (08.00 - 15.00 WITA)
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT REAL-TIME MONITOR -->
+    <script>
+        // 1. Update Jam Realtime
+        function updateJam() {
+            const sekarang = new Date();
+            let jam = String(sekarang.getHours()).padStart(2, '0');
+            let menit = String(sekarang.getMinutes()).padStart(2, '0');
+            let detik = String(sekarang.getSeconds()).padStart(2, '0');
+            document.getElementById('jam-digital').innerText = `${jam}:${menit}:${detik} WITA`;
+        }
+        setInterval(updateJam, 1000);
+        updateJam();
+
+        // 2. Baca Data dari LocalStorage
+        function muatDataDisplay() {
+            let daftarAntrean = JSON.parse(localStorage.getItem('antreanShinku')) || [];
+            let panggilanAktif = JSON.parse(localStorage.getItem('panggilanAktifShinku')) || null;
+
+            document.getElementById('total-menunggu').innerText = daftarAntrean.length;
+
+            if (panggilanAktif) {
+                document.getElementById('display-nomor').innerText = panggilanAktif.nomor;
+                document.getElementById('display-layanan').innerText = panggilanAktif.layanan;
+                document.getElementById('status-badge').innerText = "DIPANGGIL";
+            }
+        }
+
+        // 3. Pantau Perubahan Data secara Real-Time
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'panggilanAktifShinku' || e.key === 'antreanShinku') {
+                muatDataDisplay();
+            }
+        });
+
+        // Load saat pertama buka
+        muatDataDisplay();
+    </script>
+</body>
+</html>
